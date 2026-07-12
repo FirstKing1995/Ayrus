@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com https://www.gstatic.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firestore.googleapis.com; base-uri 'self'; form-action 'self'" />
+  <meta name="robots" content="noindex" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#000000" />
+  <title>Ayrus — Minha conta</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="logo" href="index.html"><span class="bolt">⚡</span>AYRUS</a>
+      <button class="btn btn-ghost btn-sm btn-sair hidden" id="topo-sair">Sair</button>
+    </div>
+  </header>
+
+  <!-- LOADING -->
+  <div id="view-loading" class="container dash-grid">
+    <div class="skeleton"></div>
+    <div class="skeleton" style="min-height:80px"></div>
+  </div>
+
+  <!-- LOGIN / CADASTRO -->
+  <div id="view-auth" class="auth-wrap hidden">
+    <div class="card">
+      <h2 id="auth-title" style="margin-bottom:20px">Entrar no Ayrus</h2>
+      <form id="auth-form">
+        <div class="field">
+          <label for="auth-email">E-mail</label>
+          <input id="auth-email" name="email" type="email" autocomplete="email" required />
+        </div>
+        <div class="field">
+          <label for="auth-senha">Senha</label>
+          <input id="auth-senha" name="senha" type="password" autocomplete="current-password" minlength="8" required />
+        </div>
+        <button id="auth-btn" class="btn btn-primary btn-block" type="submit">Entrar</button>
+      </form>
+      <p class="auth-toggle">
+        <a href="#" id="forgot-link">Esqueci minha senha</a>
+      </p>
+      <p class="auth-toggle">
+        <span id="auth-toggle-text" class="muted">Primeira vez aqui?</span>
+        <a href="#" id="auth-toggle-link">Criar conta</a>
+      </p>
+      <p class="auth-toggle muted" style="font-size:12px;margin-top:20px">
+        Use o mesmo e-mail informado na sua contratação — é ele que libera seus dados.
+      </p>
+    </div>
+  </div>
+
+  <!-- VERIFICAÇÃO DE E-MAIL -->
+  <div id="view-verify" class="auth-wrap hidden">
+    <div class="card" style="text-align:center">
+      <h2>Confirme seu e-mail</h2>
+      <p class="muted" style="margin:12px 0 4px">Enviamos um link de confirmação para:</p>
+      <p id="verify-email-label" style="color:var(--text);font-weight:700"></p>
+      <p class="muted" style="margin:12px 0 20px">Por segurança, seus dados só aparecem depois da confirmação.</p>
+      <button id="verify-done" class="btn btn-primary btn-block">Já confirmei</button>
+      <button id="verify-resend" class="btn btn-ghost btn-block btn-sm" style="margin-top:10px">Reenviar link</button>
+      <button class="btn btn-ghost btn-block btn-sm btn-sair" style="margin-top:10px">Sair</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="view-dash" class="container dash-grid hidden">
+    <div>
+      <h2 id="dash-hello">Olá!</h2>
+      <small class="muted">Acompanhe sua fatura e sua economia em tempo real.</small>
+    </div>
+
+    <div id="dash-content" class="dash-grid" style="padding:0">
+      <div class="card" id="card-fatura">
+        <div id="fatura-atual"><div class="skeleton"></div></div>
+      </div>
+
+      <div class="card">
+        <h3>Economia acumulada</h3>
+        <p class="big-number green money" id="eco-total">—</p>
+        <small class="muted">Soma de tudo que você já deixou de pagar desde que entrou no Ayrus.</small>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:8px">Histórico</h3>
+        <div id="historico"><div class="skeleton" style="min-height:60px"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sem scripts inline: a CSP só permite arquivos próprios + gstatic -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

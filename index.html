@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'self'; form-action 'self'" />
+  <meta name="description" content="Ayrus — sua conta de luz até 31% menor com energia solar por assinatura. Sem obra, sem placa, sem investimento." />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#000000" />
+  <title>Ayrus — Energia solar por assinatura</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <span class="logo"><span class="bolt">⚡</span>AYRUS</span>
+      <a class="btn btn-ghost btn-sm" href="app.html">Entrar</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero container">
+      <h1>Sua conta de luz,<br /><span class="highlight">até 31% menor.</span></h1>
+      <p class="sub">Energia solar por assinatura. Sem obra, sem placa no telhado, sem investimento. Você só troca um preço alto por um menor.</p>
+      <a class="btn btn-primary" href="#simulador">Simular minha economia</a>
+    </section>
+
+    <!-- SIMULADOR -->
+    <section class="section container narrow" id="simulador">
+      <div class="card card-highlight">
+        <h2>Quanto você economiza?</h2>
+        <p class="muted" style="margin:8px 0 16px">Digite o valor médio da sua conta de luz:</p>
+        <div class="field">
+          <label for="sim-conta">Valor mensal da conta (R$)</label>
+          <input id="sim-conta" type="number" inputmode="decimal" min="50" max="100000" step="10" placeholder="Ex.: 400" />
+        </div>
+        <div id="sim-result" class="sim-result hidden">
+          <small class="muted">Economia estimada*</small>
+          <p class="big-number green money" id="sim-mes">—</p>
+          <small class="muted">por mês · <strong id="sim-ano" class="money">—</strong> por ano</small>
+        </div>
+        <small class="muted" style="display:block;margin-top:12px">*Estimativa com base na tarifa média de referência. O valor real varia conforme sua concessionária, bandeira tarifária e consumo compensável.</small>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section class="section container">
+      <h2 class="section-title">Como funciona</h2>
+      <div class="steps">
+        <div class="card">
+          <div class="step-num">1</div>
+          <h3>Você assina</h3>
+          <p class="muted">Sem obra e sem equipamento. Conectamos sua conta de luz a uma usina solar parceira da sua região.</p>
+        </div>
+        <div class="card">
+          <div class="step-num">2</div>
+          <h3>A usina gera créditos</h3>
+          <p class="muted">Os créditos de energia entram direto na sua conta da concessionária, reduzindo o valor dela.</p>
+        </div>
+        <div class="card">
+          <div class="step-num">3</div>
+          <h3>Você paga menos</h3>
+          <p class="muted">Paga ao Ayrus R$ 0,65 por kWh — bem menos que a tarifa cheia. A diferença fica no seu bolso, todo mês.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section container narrow">
+      <h2 class="section-title">Perguntas frequentes</h2>
+      <details class="faq-item">
+        <summary>Vou parar de receber a conta da concessionária?</summary>
+        <p>Não. Você continua cliente da sua concessionária e recebe a conta dela normalmente — só que reduzida pelos créditos de energia. A fatura do Ayrus cobre os créditos que você usou, por um preço menor.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Precisa instalar alguma coisa?</summary>
+        <p>Nada. Zero obra, zero equipamento, zero visita técnica. Tudo acontece no sistema de compensação da própria concessionária.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Tem fidelidade ou multa?</summary>
+        <p>As condições de permanência e aviso prévio ficam claras no contrato, antes de você assinar. Cancelamento é feito pelo mesmo canal da contratação, sem burocracia escondida.</p>
+      </details>
+      <details class="faq-item">
+        <summary>Como eu pago?</summary>
+        <p>Uma fatura mensal via PIX, no app do Ayrus. Você acompanha consumo, pagamento e economia acumulada em tempo real.</p>
+      </details>
+    </section>
+
+    <!-- LEAD -->
+    <section class="section container narrow" id="contato">
+      <div class="card">
+        <h2>Quero pagar menos luz</h2>
+        <p class="muted" style="margin:8px 0 20px">Deixe seu contato e retornamos com sua simulação exata, sem compromisso.</p>
+
+        <form id="lead-form" novalidate>
+          <div class="field">
+            <label for="lead-nome">Nome completo</label>
+            <input id="lead-nome" name="nome" type="text" maxlength="80" autocomplete="name" required />
+          </div>
+          <div class="field">
+            <label for="lead-whats">WhatsApp (com DDD)</label>
+            <input id="lead-whats" name="whatsapp" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="(31) 99999-9999" required />
+          </div>
+          <div class="field">
+            <label for="lead-cidade">Cidade / UF</label>
+            <input id="lead-cidade" name="cidade" type="text" maxlength="60" placeholder="Ex.: Belo Horizonte / MG" />
+          </div>
+          <div class="field">
+            <label for="lead-valor">Valor médio da conta de luz (R$)</label>
+            <input id="lead-valor" name="valor_conta" type="number" inputmode="decimal" min="0" max="100000" placeholder="Ex.: 400" />
+          </div>
+
+          <!-- Honeypot anti-bot: humanos não veem este campo -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="lead-website">Não preencha este campo</label>
+            <input id="lead-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <label class="check" style="margin-bottom:16px">
+            <input type="checkbox" name="consent" required />
+            <span>Autorizo o Ayrus a usar meus dados apenas para retornar este contato, conforme a <a href="#" rel="noopener">Política de Privacidade</a>. Nada de spam.</span>
+          </label>
+
+          <button id="lead-btn" class="btn btn-primary btn-block" type="submit">Quero economizar</button>
+        </form>
+
+        <div id="lead-ok" class="empty-state hidden">
+          <p style="color:var(--success);font-weight:700;font-size:18px">Recebido! ⚡</p>
+          <p class="muted">Nosso time chama você no WhatsApp em breve com a sua simulação.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>⚡ AYRUS — energia por assinatura</p>
+      <p style="margin-top:8px"><a href="#">Termos de Uso</a> · <a href="#">Política de Privacidade</a></p>
+    </div>
+  </footer>
+
+  <script type="module" src="js/landing.js"></script>
+</body>
+</html>
