@@ -15,7 +15,20 @@ import { callApi } from "./api.js";
 import { el, render, money, kwh, mesRefLabel, dateLabel, toast, copyToClipboard, statusBadge } from "./ui.js";
 
 const $ = (id) => document.getElementById(id);
-const views = { auth: $("view-auth"), verify: $("view-verify"), dash: $("view-dash"), loading: $("view-loading") };
+const views = { auth: $("view-auth"), verify: $("view-verify"), onboard: $("view-onboard"), dash: $("view-dash"), loading: $("view-loading") };
+
+// Plano escolhido na landing (?plano=ouro) e código de afiliado — sobrevivem
+// à ida ao e-mail de verificação via localStorage.
+const planoUrl = (new URLSearchParams(location.search).get("plano") || "").toUpperCase();
+if (["BRONZE", "PRATA", "OURO"].includes(planoUrl)) {
+  try { localStorage.setItem("ayrus_plano", planoUrl); } catch { /* modo privado */ }
+}
+function planoEscolhido() {
+  try { return localStorage.getItem("ayrus_plano") || "OURO"; } catch { return "OURO"; }
+}
+function refSalvo() {
+  try { return localStorage.getItem("ayrus_ref") || null; } catch { return null; }
+}
 
 let unsubCliente = null;
 let unsubFaturas = null;
@@ -127,29 +140,61 @@ onAuthStateChanged(auth, async (user) => {
 
   show("loading");
 
-  // Vincula a conta Firebase ao cadastro feito pelo admin (idempotente no servidor).
+  // Vincula a conta Firebase ao cadastro (idempotente no servidor).
   const vinculo = await callApi("cliente.vincular", {}, user);
   if (!vinculo.ok && vinculo.error?.code === "SEM_CADASTRO") {
-    show("dash");
-    render($("dash-content"), el("div", { class: "card" }, [
-      el("h3", { text: "Quase lá!" }),
-      el("p", { class: "muted", text: "Sua conta foi criada, mas este e-mail ainda não está em nossa base de clientes. Fale com nosso time para ativar seu plano." }),
-    ]));
+    // Primeiro acesso sem cadastro prévio → onboarding com plano reservado
+    $("onb-plano").value = planoEscolhido();
+    show("onboard");
     return;
   }
 
   iniciarDashboard(user);
 });
 
+// ---------- Onboarding (autocadastro com plano) ----------
+$("onboard-form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const form = ev.currentTarget;
+  const btn = $("onboard-btn");
+  const user = auth.currentUser;
+  if (!user) return show("auth");
+
+  const nome = form.nome.value.trim();
+  if (nome.length < 3) return toast("Digite seu nome completo.", "error");
+  if (!form.consent.checked) return toast("É preciso aceitar os termos para continuar.", "error");
+
+  btn.disabled = true;
+  btn.textContent = "Reservando…";
+
+  const res = await callApi("cliente.autocadastro", {
+    nome: nome.slice(0, 80),
+    whatsapp: form.whatsapp.value.replace(/\D/g, ""),
+    plano: form.plano.value,
+    consent: true,
+    ref: refSalvo(),
+  }, user);
+
+  if (res.ok) {
+    toast("Plano reservado! Bem-vindo ao Ayrus. ⚡", "success");
+    iniciarDashboard(user);
+  } else {
+    toast(res.error?.msg || "Não deu certo agora. Tente de novo.", "error");
+    btn.disabled = false;
+    btn.textContent = "Reservar meu plano";
+  }
+});
+
 function iniciarDashboard(user) {
   show("dash");
 
-  // Perfil (nome, economia acumulada, status)
+  // Perfil (nome, economia acumulada, status, plano)
   unsubCliente = onSnapshot(doc(db, "clientes", user.uid), (snap) => {
     const c = snap.data();
     if (!c) return;
     $("dash-hello").textContent = c.nome ? `Olá, ${c.nome}!` : "Olá!";
     $("eco-total").textContent = money(c.economiaAcumulada || 0);
+    renderStatusBanner(c);
   }, () => toast("Não foi possível carregar seu perfil agora.", "error"));
 
   // Faturas (últimas 24, mais recente primeiro)
@@ -171,6 +216,25 @@ function iniciarDashboard(user) {
 // ============================================================
 // RENDERIZAÇÃO
 // ============================================================
+
+const PLANO_LABEL = { BRONZE: "Bronze", PRATA: "Prata", OURO: "Ouro" };
+
+function renderStatusBanner(c) {
+  const box = $("status-banner");
+  if (c.status === "AGUARDANDO") {
+    const plano = PLANO_LABEL[c.plano] || c.plano || "—";
+    render(box, el("div", { class: "card card-highlight" }, [
+      el("h3", { text: `Plano ${plano} reservado ✓` }),
+      el("p", { class: "muted", text: "Sua conta está criada e seu plano garantido. Falta pouco: nossa equipe vai chamar você para a assinatura digital do contrato e o primeiro pagamento. Enquanto isso, explore o app à vontade." }),
+    ]));
+  } else if (c.status === "INADIMPLENTE") {
+    render(box, el("div", { class: "card" }, [
+      el("p", { class: "muted", text: "Há uma fatura em aberto. Regularize pelo PIX abaixo para manter sua economia ativa." }),
+    ]));
+  } else {
+    render(box, []);
+  }
+}
 
 function renderFaturaAtual(f, user) {
   const box = $("fatura-atual");
