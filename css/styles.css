@@ -161,6 +161,34 @@ a:hover { color: var(--primary-hover); }
   padding: 20px; text-align: center; margin-top: 16px;
 }
 
+/* ---------- Planos ---------- */
+.plans { display: grid; gap: 16px; grid-template-columns: 1fr; }
+@media (min-width: 720px) { .plans { grid-template-columns: repeat(3, 1fr); } }
+.plan-card { display: flex; flex-direction: column; gap: 10px; text-align: center; position: relative; }
+.plan-card.featured { border-color: var(--primary); box-shadow: 0 0 24px rgba(255, 102, 0, 0.15); }
+.plan-tag {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--primary); color: #000; font-size: 11px; font-weight: 800;
+  letter-spacing: 0.6px; padding: 4px 12px; border-radius: 999px; white-space: nowrap;
+}
+.plan-price { color: var(--text); font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.plan-price small { color: var(--text-3); font-size: 14px; font-weight: 600; }
+.plan-eco { color: var(--success); font-weight: 700; font-size: 14px; }
+.plan-card .btn { margin-top: auto; }
+
+.sim-tiers { display: grid; gap: 10px; grid-template-columns: repeat(3, 1fr); margin-top: 12px; }
+@media (max-width: 480px) { .sim-tiers { grid-template-columns: 1fr; } }
+.sim-tier {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 12px 8px;
+}
+.sim-tier.featured { border-color: var(--primary); }
+.sim-tier .tier-name { display: block; font-size: 12px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
+.tier-name.bronze { color: #cd7f32; }
+.tier-name.prata { color: #b3b3b3; }
+.tier-name.ouro { color: var(--primary); }
+.sim-tier .tier-val { color: var(--success); font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+
 details.faq-item {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px;
