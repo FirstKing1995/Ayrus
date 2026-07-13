@@ -18,16 +18,16 @@
 
 export const AYRUS_CONFIG = {
   firebase: {
-    apiKey: "COLE_AQUI",
-    authDomain: "SEU-PROJETO.firebaseapp.com",
-    projectId: "SEU-PROJETO",
-    storageBucket: "SEU-PROJETO.appspot.com",
-    messagingSenderId: "000000000000",
-    appId: "1:000000000000:web:xxxxxxxxxxxxxxxx",
+    apiKey: "AIzaSyAbLksF7TIo5JYKy20XgfvknkIp7wVZpnY",
+    authDomain: "ayrus-app.firebaseapp.com",
+    projectId: "ayrus-app",
+    storageBucket: "ayrus-app.firebasestorage.app",
+    messagingSenderId: "827151910218",
+    appId: "1:827151910218:web:785ac66c33a78752c4adb3",
   },
 
   // URL do Web App do Apps Script (termina em /exec)
-  gasUrl: "https://script.google.com/macros/s/COLE_AQUI/exec",
+  gasUrl: "https://script.google.com/macros/s/AKfycbyLCWktFGEQwgFLHIq5-hAaGje8qNe_O480Ze0oHsWLik69ktfOZZcuk16Zyxsct2DwPQ/exec",
 
   // Parâmetros de EXIBIÇÃO da landing (estimativas).
   // Os valores oficiais de cobrança vivem em DB_Config, no servidor.
