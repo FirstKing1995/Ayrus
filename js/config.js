@@ -27,10 +27,10 @@ export const AYRUS_CONFIG = {
   },
 
   // URL do Web App do Apps Script (termina em /exec)
-  gasUrl: "https://script.google.com/macros/s/AKfycbyLCWktFGEQwgFLHIq5-hAaGje8qNe_O480Ze0oHsWLik69ktfOZZcuk16Zyxsct2DwPQ/exec",
+  gasUrl: "https://script.google.com/macros/s/COLE_AQUI/exec",
 
   // Parâmetros de EXIBIÇÃO da landing (estimativas).
   // Os valores oficiais de cobrança vivem em DB_Config, no servidor.
-  precoKwh: 0.65,
+  planos: { bronze: 0.85, prata: 0.75, ouro: 0.65 },
   tarifaReferencia: 0.95,
 };
