@@ -241,8 +241,21 @@ details.faq-item p { margin-top: 10px; font-size: 15px; }
 .hidden { display: none !important; }
 
 /* ---------- Auth ---------- */
-.auth-wrap { max-width: 400px; margin: 48px auto; padding: 0 20px; }
+.auth-wrap { max-width: 440px; margin: 48px auto; padding: 0 20px; }
 .auth-toggle { text-align: center; margin-top: 16px; font-size: 14px; }
+
+.plan-mini {
+  background: var(--primary-soft); border: 1px solid var(--primary);
+  border-radius: var(--radius); padding: 10px 14px;
+  color: var(--text); font-weight: 700; text-align: center;
+  margin-bottom: 16px; font-variant-numeric: tabular-nums;
+}
+.howto {
+  background: var(--surface-2); border-radius: var(--radius);
+  padding: 14px 16px; margin-bottom: 16px; font-size: 14px;
+}
+.howto strong { color: var(--text); }
+.howto ol { margin: 10px 0 0 18px; color: var(--text-2); display: grid; gap: 8px; }
 
 /* ---------- Footer ---------- */
 footer {
