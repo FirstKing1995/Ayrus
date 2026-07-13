@@ -67,12 +67,45 @@
     </div>
   </div>
 
+  <!-- ONBOARDING (completar cadastro + reservar plano) -->
+  <div id="view-onboard" class="auth-wrap hidden">
+    <div class="card">
+      <h2>Complete seu cadastro</h2>
+      <p class="muted" style="margin:8px 0 20px">Reserve seu plano agora. A ativação acontece após a assinatura do contrato e o primeiro pagamento — nossa equipe conduz você.</p>
+      <form id="onboard-form">
+        <div class="field">
+          <label for="onb-nome">Nome completo</label>
+          <input id="onb-nome" name="nome" type="text" maxlength="80" autocomplete="name" required />
+        </div>
+        <div class="field">
+          <label for="onb-whats">WhatsApp (com DDD)</label>
+          <input id="onb-whats" name="whatsapp" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="(31) 99999-9999" />
+        </div>
+        <div class="field">
+          <label for="onb-plano">Plano</label>
+          <select id="onb-plano" name="plano" required>
+            <option value="BRONZE">Bronze — R$ 0,85/kWh (economia ~10%)</option>
+            <option value="PRATA">Prata — R$ 0,75/kWh (economia ~21%)</option>
+            <option value="OURO" selected>Ouro — R$ 0,65/kWh (economia ~32%)</option>
+          </select>
+        </div>
+        <label class="check" style="margin-bottom:16px">
+          <input type="checkbox" name="consent" required />
+          <span>Li e aceito os <a href="#" rel="noopener">Termos de Uso</a> e a <a href="#" rel="noopener">Política de Privacidade</a>.</span>
+        </label>
+        <button id="onboard-btn" class="btn btn-primary btn-block" type="submit">Reservar meu plano</button>
+      </form>
+    </div>
+  </div>
+
   <!-- DASHBOARD -->
   <div id="view-dash" class="container dash-grid hidden">
     <div>
       <h2 id="dash-hello">Olá!</h2>
       <small class="muted">Acompanhe sua fatura e sua economia em tempo real.</small>
     </div>
+
+    <div id="status-banner"></div>
 
     <div id="dash-content" class="dash-grid" style="padding:0">
       <div class="card" id="card-fatura">
