@@ -49,16 +49,46 @@ function cleanupSnapshots() {
 const authForm = $("auth-form");
 const authBtn = $("auth-btn");
 let mode = "login"; // login | signup
+let pendingSignup = null; // dados do cadastro aguardando a criação da conta Firebase
+
+const PLANO_INFO = {
+  BRONZE: ["Bronze", "R$ 0,85", "~10%"],
+  PRATA: ["Prata", "R$ 0,75", "~21%"],
+  OURO: ["Ouro", "R$ 0,65", "~32%"],
+};
+
+function atualizarResumoPlano() {
+  const [nome, preco, eco] = PLANO_INFO[$("auth-plano").value] || PLANO_INFO.OURO;
+  $("plan-summary").textContent = `Plano ${nome} — ${preco}/kWh · economia estimada de ${eco}`;
+}
+
+function setMode(m) {
+  mode = m;
+  const signup = m === "signup";
+  $("auth-title").textContent = signup ? "Criar conta e reservar seu plano" : "Entrar no Ayrus";
+  authBtn.textContent = signup ? "Criar conta e reservar plano" : "Entrar";
+  $("auth-toggle-text").textContent = signup ? "Já tem conta?" : "Primeira vez aqui?";
+  $("auth-toggle-link").textContent = signup ? "Entrar" : "Criar conta";
+  $("forgot-link").classList.toggle("hidden", signup);
+  document.querySelectorAll(".signup-only").forEach((n) => n.classList.toggle("hidden", !signup));
+  if (signup) {
+    $("auth-plano").value = planoEscolhido();
+    atualizarResumoPlano();
+  }
+}
 
 $("auth-toggle-link").addEventListener("click", (ev) => {
   ev.preventDefault();
-  mode = mode === "login" ? "signup" : "login";
-  $("auth-title").textContent = mode === "login" ? "Entrar no Ayrus" : "Criar sua conta";
-  authBtn.textContent = mode === "login" ? "Entrar" : "Criar conta";
-  $("auth-toggle-text").textContent = mode === "login" ? "Primeira vez aqui?" : "Já tem conta?";
-  $("auth-toggle-link").textContent = mode === "login" ? "Criar conta" : "Entrar";
-  $("forgot-link").classList.toggle("hidden", mode !== "login");
+  setMode(mode === "login" ? "signup" : "login");
 });
+
+$("auth-plano").addEventListener("change", () => {
+  try { localStorage.setItem("ayrus_plano", $("auth-plano").value); } catch { /* modo privado */ }
+  atualizarResumoPlano();
+});
+
+// Veio da landing com plano escolhido? Abre direto no cadastro.
+if (["BRONZE", "PRATA", "OURO"].includes(planoUrl)) setMode("signup");
 
 const AUTH_ERRORS = {
   "auth/invalid-credential": "E-mail ou senha incorretos.",
@@ -74,19 +104,31 @@ authForm.addEventListener("submit", async (ev) => {
   ev.preventDefault();
   const email = authForm.email.value.trim().toLowerCase();
   const senha = authForm.senha.value;
-  if (mode === "signup" && senha.length < 8) return toast("Use uma senha com pelo menos 8 caracteres.", "error");
+  if (!email) return toast("Digite seu e-mail.", "error");
+
+  if (mode === "signup") {
+    const nome = authForm.nome.value.trim();
+    const whatsapp = authForm.whatsapp.value.replace(/\D/g, "");
+    if (nome.length < 3) return toast("Digite seu nome completo.", "error");
+    if (whatsapp.length < 10 || whatsapp.length > 13) return toast("Digite um WhatsApp válido com DDD.", "error");
+    if (senha.length < 8) return toast("Use uma senha com pelo menos 8 caracteres.", "error");
+    if (!authForm.consent.checked) return toast("É preciso aceitar os termos para continuar.", "error");
+    pendingSignup = {
+      nome: nome.slice(0, 80),
+      whatsapp,
+      plano: authForm.plano.value,
+      consent: true,
+      ref: refSalvo(),
+    };
+  }
 
   authBtn.disabled = true;
   try {
-    if (mode === "signup") {
-      const cred = await createUserWithEmailAndPassword(auth, email, senha);
-      await sendEmailVerification(cred.user);
-      toast("Conta criada! Enviamos um link de confirmação para seu e-mail.", "success");
-    } else {
-      await signInWithEmailAndPassword(auth, email, senha);
-    }
-    // onAuthStateChanged assume daqui
+    if (mode === "signup") await createUserWithEmailAndPassword(auth, email, senha);
+    else await signInWithEmailAndPassword(auth, email, senha);
+    // onAuthStateChanged assume daqui (e consome pendingSignup)
   } catch (err) {
+    pendingSignup = null;
     toast(AUTH_ERRORS[err.code] || "Não foi possível entrar agora. Tente de novo.", "error");
   } finally {
     authBtn.disabled = false;
@@ -132,20 +174,40 @@ onAuthStateChanged(auth, async (user) => {
   $("topo-sair").classList.toggle("hidden", !user);
 
   if (!user) { show("auth"); return; }
-  if (!user.emailVerified) {
-    $("verify-email-label").textContent = user.email || "";
-    show("verify");
-    return;
-  }
 
   show("loading");
 
-  // Vincula a conta Firebase ao cadastro (idempotente no servidor).
+  // Conta recém-criada no formulário de cadastro → autocadastro imediato
+  if (pendingSignup) {
+    const dados = pendingSignup;
+    pendingSignup = null;
+    const res = await callApi("cliente.autocadastro", dados, user);
+    if (res.ok) {
+      toast("Plano reservado! Bem-vindo ao Ayrus. ⚡", "success");
+      iniciarDashboard(user);
+      return;
+    }
+    // Falhou (rede/limite): cai no onboarding pré-preenchido para tentar de novo
+    $("onb-nome").value = dados.nome || "";
+    $("onb-whats").value = dados.whatsapp || "";
+    $("onb-plano").value = dados.plano || planoEscolhido();
+    toast(res.error?.msg || "Quase lá — confirme seus dados e tente de novo.", "error");
+    show("onboard");
+    return;
+  }
+
+  // Login normal: vincula a conta ao cadastro (idempotente no servidor).
   const vinculo = await callApi("cliente.vincular", {}, user);
   if (!vinculo.ok && vinculo.error?.code === "SEM_CADASTRO") {
-    // Primeiro acesso sem cadastro prévio → onboarding com plano reservado
+    // Conta sem cadastro (ex.: abandono no meio) → onboarding
     $("onb-plano").value = planoEscolhido();
     show("onboard");
+    return;
+  }
+  if (!vinculo.ok && vinculo.error?.code === "EMAIL_NAO_VERIFICADO") {
+    // Caso raro: cadastro pré-criado pela equipe — confirmar posse do e-mail
+    $("verify-email-label").textContent = user.email || "";
+    show("verify");
     return;
   }
 
