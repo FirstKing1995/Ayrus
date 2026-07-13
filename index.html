@@ -25,7 +25,8 @@
     <section class="hero container">
       <h1>Sua conta de luz,<br /><span class="highlight">até 31% menor.</span></h1>
       <p class="sub">Energia solar por assinatura. Sem obra, sem placa no telhado, sem investimento. Você só troca um preço alto por um menor.</p>
-      <a class="btn btn-primary" href="#simulador">Simular minha economia</a>
+      <a class="btn btn-primary" href="#planos">Quero assinar agora</a>
+      <a class="btn btn-ghost" style="margin-left:8px" href="#simulador">Simular economia</a>
     </section>
 
     <!-- SIMULADOR -->
@@ -38,9 +39,23 @@
           <input id="sim-conta" type="number" inputmode="decimal" min="50" max="100000" step="10" placeholder="Ex.: 400" />
         </div>
         <div id="sim-result" class="sim-result hidden">
-          <small class="muted">Economia estimada*</small>
-          <p class="big-number green money" id="sim-mes">—</p>
-          <small class="muted">por mês · <strong id="sim-ano" class="money">—</strong> por ano</small>
+          <small class="muted">Sua economia estimada por mês, em cada plano*</small>
+          <div class="sim-tiers">
+            <div class="sim-tier">
+              <span class="tier-name bronze">Bronze</span>
+              <span class="tier-val money" id="sim-bronze">—</span>
+            </div>
+            <div class="sim-tier">
+              <span class="tier-name prata">Prata</span>
+              <span class="tier-val money" id="sim-prata">—</span>
+            </div>
+            <div class="sim-tier featured">
+              <span class="tier-name ouro">Ouro</span>
+              <span class="tier-val money" id="sim-ouro">—</span>
+            </div>
+          </div>
+          <small class="muted" style="display:block;margin-top:10px">No Ouro, isso dá <strong id="sim-ano" class="money" style="color:var(--success)">—</strong> por ano.</small>
+          <a class="btn btn-primary btn-block" style="margin-top:14px" href="#planos">Escolher meu plano</a>
         </div>
         <small class="muted" style="display:block;margin-top:12px">*Estimativa com base na tarifa média de referência. O valor real varia conforme sua concessionária, bandeira tarifária e consumo compensável.</small>
       </div>
@@ -68,6 +83,38 @@
       </div>
     </section>
 
+    <!-- PLANOS -->
+    <section class="section container" id="planos">
+      <h2 class="section-title">Escolha seu plano e comece agora</h2>
+      <div class="plans">
+        <div class="card plan-card">
+          <h3><span class="tier-name bronze">Bronze</span></h3>
+          <p class="plan-price">R$ 0,85 <small>/kWh</small></p>
+          <p class="plan-eco">economia de ~10%</p>
+          <p class="muted">Para começar a pagar menos sem compromisso longo.</p>
+          <a class="btn btn-ghost" href="app.html?plano=bronze">Assinar Bronze</a>
+        </div>
+        <div class="card plan-card">
+          <h3><span class="tier-name prata">Prata</span></h3>
+          <p class="plan-price">R$ 0,75 <small>/kWh</small></p>
+          <p class="plan-eco">economia de ~21%</p>
+          <p class="muted">O equilíbrio entre flexibilidade e desconto.</p>
+          <a class="btn btn-ghost" href="app.html?plano=prata">Assinar Prata</a>
+        </div>
+        <div class="card plan-card featured">
+          <span class="plan-tag">MAIS ECONOMIA</span>
+          <h3><span class="tier-name ouro">Ouro</span></h3>
+          <p class="plan-price">R$ 0,65 <small>/kWh</small></p>
+          <p class="plan-eco">economia de ~32%</p>
+          <p class="muted">O menor preço por kWh. Máxima economia todo mês.</p>
+          <a class="btn btn-primary" href="app.html?plano=ouro">Assinar Ouro</a>
+        </div>
+      </div>
+      <p class="muted" style="text-align:center;margin-top:20px;font-size:14px">
+        Você cria sua conta agora e já reserva o plano. A ativação acontece após a assinatura digital do contrato e o primeiro pagamento — nossa equipe conduz você.
+      </p>
+    </section>
+
     <!-- FAQ -->
     <section class="section container narrow">
       <h2 class="section-title">Perguntas frequentes</h2>
@@ -92,8 +139,8 @@
     <!-- LEAD -->
     <section class="section container narrow" id="contato">
       <div class="card">
-        <h2>Quero pagar menos luz</h2>
-        <p class="muted" style="margin:8px 0 20px">Deixe seu contato e retornamos com sua simulação exata, sem compromisso.</p>
+        <h2>Prefere falar com alguém antes?</h2>
+        <p class="muted" style="margin:8px 0 20px">Sem pressa. Deixe seu contato e nossa equipe chama você no WhatsApp com a simulação exata — sem compromisso.</p>
 
         <form id="lead-form" novalidate>
           <div class="field">
