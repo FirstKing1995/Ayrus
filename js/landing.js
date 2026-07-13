@@ -7,18 +7,28 @@ import { AYRUS_CONFIG } from "./config.js";
 import { callApi } from "./api.js";
 import { money, toast } from "./ui.js";
 
-const { precoKwh, tarifaReferencia } = AYRUS_CONFIG;
+const tarifaReferencia = AYRUS_CONFIG.tarifaReferencia || 0.95;
+const planos = AYRUS_CONFIG.planos || { bronze: 0.85, prata: 0.75, ouro: 0.65 };
 
 // ---------- Código de afiliado (?ref=) ----------
+// Guardado para o autocadastro creditar o afiliado mesmo se a pessoa
+// for direto para "Assinar" (app.html lê do localStorage).
 const refCode = (new URLSearchParams(location.search).get("ref") || "")
   .replace(/[^a-zA-Z0-9_-]/g, "")
   .slice(0, 24);
+if (refCode) {
+  try { localStorage.setItem("ayrus_ref", refCode); } catch { /* modo privado */ }
+}
 
-// ---------- Simulador ----------
+// ---------- Simulador (3 níveis) ----------
 const simInput = document.getElementById("sim-conta");
 const simResult = document.getElementById("sim-result");
-const simMes = document.getElementById("sim-mes");
 const simAno = document.getElementById("sim-ano");
+const tiers = {
+  bronze: document.getElementById("sim-bronze"),
+  prata: document.getElementById("sim-prata"),
+  ouro: document.getElementById("sim-ouro"),
+};
 
 function simular() {
   const conta = Number(String(simInput.value).replace(",", "."));
@@ -27,9 +37,13 @@ function simular() {
     return;
   }
   const kwhEstimado = conta / tarifaReferencia;
-  const economiaMes = kwhEstimado * (tarifaReferencia - precoKwh);
-  simMes.textContent = money(economiaMes);
-  simAno.textContent = money(economiaMes * 12);
+  let ecoOuro = 0;
+  for (const [nome, preco] of Object.entries(planos)) {
+    const economiaMes = kwhEstimado * (tarifaReferencia - preco);
+    if (tiers[nome]) tiers[nome].textContent = money(economiaMes);
+    if (nome === "ouro") ecoOuro = economiaMes;
+  }
+  simAno.textContent = money(ecoOuro * 12);
   simResult.classList.remove("hidden");
 }
 simInput.addEventListener("input", simular);
