@@ -26,11 +26,45 @@
     <div class="skeleton" style="min-height:80px"></div>
   </div>
 
-  <!-- LOGIN / CADASTRO -->
+  <!-- LOGIN / CADASTRO (cadastro = tela de venda: plano + como funciona + dados) -->
   <div id="view-auth" class="auth-wrap hidden">
     <div class="card">
       <h2 id="auth-title" style="margin-bottom:20px">Entrar no Ayrus</h2>
-      <form id="auth-form">
+      <form id="auth-form" novalidate>
+
+        <!-- Blocos exibidos apenas no modo "criar conta" -->
+        <div class="signup-only hidden">
+          <div class="plan-mini" id="plan-summary">Plano Ouro — R$ 0,65/kWh</div>
+          <div class="field">
+            <label for="auth-plano">Seu plano</label>
+            <select id="auth-plano" name="plano">
+              <option value="BRONZE">Bronze — R$ 0,85/kWh (economia ~10%)</option>
+              <option value="PRATA">Prata — R$ 0,75/kWh (economia ~21%)</option>
+              <option value="OURO" selected>Ouro — R$ 0,65/kWh (economia ~32%)</option>
+            </select>
+          </div>
+
+          <div class="howto">
+            <strong>Como funciona a contratação</strong>
+            <ol>
+              <li>Você cria sua conta agora e reserva o plano — <strong>sem pagar nada hoje</strong>.</li>
+              <li>Disponibilizamos o <strong>contrato digital de locação de créditos de energia</strong> para você assinar.</li>
+              <li>O contrato só passa a valer <strong>após a sua assinatura</strong>. Assinou? Ativamos sua cota de energia junto à concessionária.</li>
+              <li>Quando chegar sua <strong>primeira conta de luz já com o desconto</strong>, entramos em contato para iniciar a cobrança mensal do Ayrus (PIX).</li>
+            </ol>
+            <p class="muted" style="margin-top:8px;font-size:13px">Ou seja: nada é cobrado até a sua economia começar a aparecer.</p>
+          </div>
+
+          <div class="field">
+            <label for="auth-nome">Nome completo</label>
+            <input id="auth-nome" name="nome" type="text" maxlength="80" autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="auth-whats">WhatsApp (com DDD)</label>
+            <input id="auth-whats" name="whatsapp" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="(31) 99999-9999" />
+          </div>
+        </div>
+
         <div class="field">
           <label for="auth-email">E-mail</label>
           <input id="auth-email" name="email" type="email" autocomplete="email" required />
@@ -39,6 +73,12 @@
           <label for="auth-senha">Senha</label>
           <input id="auth-senha" name="senha" type="password" autocomplete="current-password" minlength="8" required />
         </div>
+
+        <label class="check signup-only hidden" style="margin-bottom:16px">
+          <input type="checkbox" name="consent" />
+          <span>Li e aceito os <a href="#" rel="noopener">Termos de Uso</a> e a <a href="#" rel="noopener">Política de Privacidade</a>, e concordo em receber o contrato digital de locação de créditos para assinatura.</span>
+        </label>
+
         <button id="auth-btn" class="btn btn-primary btn-block" type="submit">Entrar</button>
       </form>
       <p class="auth-toggle">
@@ -48,21 +88,18 @@
         <span id="auth-toggle-text" class="muted">Primeira vez aqui?</span>
         <a href="#" id="auth-toggle-link">Criar conta</a>
       </p>
-      <p class="auth-toggle muted" style="font-size:12px;margin-top:20px">
-        Use o mesmo e-mail informado na sua contratação — é ele que libera seus dados.
-      </p>
     </div>
   </div>
 
-  <!-- VERIFICAÇÃO DE E-MAIL -->
+  <!-- VERIFICAÇÃO DE E-MAIL (só para reivindicar cadastro pré-criado pela equipe) -->
   <div id="view-verify" class="auth-wrap hidden">
     <div class="card" style="text-align:center">
       <h2>Confirme seu e-mail</h2>
-      <p class="muted" style="margin:12px 0 4px">Enviamos um link de confirmação para:</p>
+      <p class="muted" style="margin:12px 0 4px">Este e-mail já estava na nossa base (cadastro feito pela equipe):</p>
       <p id="verify-email-label" style="color:var(--text);font-weight:700"></p>
-      <p class="muted" style="margin:12px 0 20px">Por segurança, seus dados só aparecem depois da confirmação.</p>
-      <button id="verify-done" class="btn btn-primary btn-block">Já confirmei</button>
-      <button id="verify-resend" class="btn btn-ghost btn-block btn-sm" style="margin-top:10px">Reenviar link</button>
+      <p class="muted" style="margin:12px 0 20px">Por segurança, confirme que ele é seu para liberar os dados.</p>
+      <button id="verify-resend" class="btn btn-primary btn-block">Enviar link de confirmação</button>
+      <button id="verify-done" class="btn btn-ghost btn-block btn-sm" style="margin-top:10px">Já confirmei</button>
       <button class="btn btn-ghost btn-block btn-sm btn-sair" style="margin-top:10px">Sair</button>
     </div>
   </div>
